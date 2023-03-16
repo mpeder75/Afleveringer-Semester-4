@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .card {
+            background-color: #8bc283;
+            color: rgb(85, 112, 80);
+            font-size: 24px;
+            width: 200px;
+            height: 200px;
+        }
+      
+        #position {
+            background-color: #afaeae;
+            color: rgb(204, 200, 200);
+            font-size: 24px;
+            padding: 10px;
+            display: grid;
+            width: fit-content;
+            height: fit-content;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        #status {
+            width: fit-content;
+            height: fit-content;
+            background-color: #afaeae;
+            border-color: black;
+            border-width: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <p id="status"> Welcome!</p>
+    </div>
+    <div id="position">
+        <button class="card" data-card-id="A1">1</button>
+        <button class="card" data-card-id="A2">2</button>
+        <button class="card" data-card-id="A3">3</button>
+        <button class="card" data-card-id="B1">4</button>
+        <button class="card" data-card-id="B2">5</button> 
+        <button class="card" data-card-id="B3">6</button>
+        <button class="card" data-card-id="C1">7</button>
+        <button class="card" data-card-id="C2">8</button>
+        <button class="card" data-card-id="C3">9</button>
+    </div>
+</body>
+</html>
+
+<script>
+    
+// OBJECT ORIENTED
+
+    // Player class. contaimns winning conds
+    class Player {
+        
+        constructor(type) {
+            this.currentPos = new Array;
+            this.symbol = type;
+        }
+
+        clearPos() {
+            this.currentPos = new Array;
+        }
+
+        addPos(pos) {
+            this.currentPos.push(pos);
+        }
+        
+        getPos() {
+            return this.currentPos;
+        }
+
+        getSymbol() {
+            return this.symbol;
+        }
+
+    }
+
+    // Board class. Does action based on the board.
+    class Board {
+        
+        constructor() {
+            this.boardPos = new Map();
+
+            this.boardPos.set('A1', null)
+            this.boardPos.set('A2', null)
+            this.boardPos.set('A3', null)
+            this.boardPos.set('B1', null)
+            this.boardPos.set('B2', null)
+            this.boardPos.set('B3', null)
+            this.boardPos.set('C1', null)
+            this.boardPos.set('C2', null)
+            this.boardPos.set('C3', null)
+        }
+
+        reset(buttons) {
+            this.boardPos.forEach((value, key) => {
+                this.boardPos.set(key, null);
+            });
+
+            var number = 1;
+            
+            buttons.forEach(element => {
+                element.innerText = number++;
+                element.style.backgroundColor="#8bc283";
+                element.style.color="rgb(0, 0, 0)";
+            })
+
+            return 2;
+        }
+        
+        isFull() {
+            var numberOfFull = 0
+
+            this.boardPos.forEach(element => {
+                if (element === null) {
+                    numberOfFull++;
+                }
+            });
+
+            return numberOfFull === 0
+        }
+        
+        getPos(pos) {
+            return this.boardPos.get(pos);
+        }
+
+        setPos(pos, player, event) {
+            this.boardPos.set(pos, player);
+            event.target.innerText = player;
+
+            if (player === "X") {
+                player = "O"
+                event.target.style.backgroundColor="#ff0000";
+                event.target.style.color="#ffffff"
+                return;
+            }
+            player = "X"
+            event.target.style.backgroundColor="#ffff00";
+        }
+    }
+
+    // Game class. Handles general game actions like move and check move
+    class Game {
+        constructor() {
+
+            this.winningCond = [["A1","A2","A3"], ["B1","B2","B3"], ["C1","C2","C3"], ["A1","B1","C1"], ["A2","B2","C2"], ["A3","B3","C3"], ["A1","B2","C3"], ["A3","B2","C1"]];
+
+            this.player1 = new Player("X");
+            this.player2 = new Player("O");
+
+            this.currentPlayer = this.player1;
+
+            this.board = new Board();
+
+            this.buttons = document.querySelectorAll(".card");
+
+            this.buttons.forEach((button) => {
+                button.addEventListener("click", this.makeMove.bind(this));
+            });
+        }
+
+        changeStatus(statusCode) {
+                var status = document.getElementById("status");
+                switch (statusCode) {
+                    case 1:
+                        status.innerText = "Invalid move. Please try again.";
+                        break;
+                    case 2:
+                        status.innerText = "Game over! No one won.";
+                        break;
+                    case 3:
+                        status.innerText = "You won " + this.currentPlayer.getSymbol() + "!";
+                        break;
+                    default:
+                        status.innerText = "Good move!";
+                        break;
+                }
+            }
+
+        hasWon() {
+            console.log(this.currentPlayer.getPos());
+            for (let i = 0; i < this.winningCond.length; i++) {
+                let innerArr = this.winningCond[i];
+                if (innerArr.every(pos => this.currentPlayer.getPos().includes(pos))) {
+                    this.board.reset(this.buttons);
+                    this.player1.clearPos()
+                    this.player2.clearPos()
+                    this.changeStatus(3);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        changePlayer() {
+            if (this.currentPlayer === this.player1) {
+                this.currentPlayer = this.player2
+                return;
+            }
+            this.currentPlayer = this.player1
+        }
+
+        makeMove(event) {
+
+            var pos = event.target.getAttribute("data-card-id")
+
+            // Checks if a position, which was already previous clicked, was clicked
+            if (!(this.board.getPos(pos) === null)) {
+                this.changeStatus(1);
+                return;
+            }
+
+            this.currentPlayer.addPos(pos)
+            this.board.setPos(pos, this.currentPlayer.getSymbol(), event);
+
+
+            if (this.board.isFull()) {
+                this.board.reset(this.buttons);
+                this.player1.clearPos();
+                this.player2.clearPos();
+                this.changeStatus(2);
+                return;
+            }
+
+            if (this.hasWon()) {
+                return;
+            }
+            
+            this.changePlayer();
+            this.changeStatus();
+        }
+    }
+
+    var game = new Game();
+</script>
