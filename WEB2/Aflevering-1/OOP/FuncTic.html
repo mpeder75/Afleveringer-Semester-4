@@ -1,0 +1,54 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .card {
+            background-color: #8bc283;
+            color: rgb(85, 112, 80);
+            font-size: 24px;
+            width: 200px;
+            height: 200px;
+        }
+      
+        #position {
+            background-color: #afaeae;
+            color: rgb(204, 200, 200);
+            font-size: 24px;
+            padding: 10px;
+            display: grid;
+            width: fit-content;
+            height: fit-content;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        #status {
+            width: fit-content;
+            height: fit-content;
+            background-color: #afaeae;
+            border-color: black;
+            border-width: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <p id="status"> Welcome!</p>
+    </div>
+    <div id="position">
+        <button class="card" data-card-id="A1">1</button>
+        <button class="card" data-card-id="A2">2</button>
+        <button class="card" data-card-id="A3">3</button>
+        <button class="card" data-card-id="B1">4</button>
+        <button class="card" data-card-id="B2">5</button> 
+        <button class="card" data-card-id="B3">6</button>
+        <button class="card" data-card-id="C1">7</button>
+        <button class="card" data-card-id="C2">8</button>
+        <button class="card" data-card-id="C3">9</button>
+    </div>
+</body>
+</html>
