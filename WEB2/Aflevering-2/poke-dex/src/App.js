@@ -1,23 +1,63 @@
 import './App.css';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
+import './PokeAPI.js'
 
-function App() {
+// ------------------[ Main method ]------------------ //
+
+const Flex = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  <View style={styles.index}>
+    <PokeInfo/>
+    <PokeList/>
+  </View>
+)};
+
+const PokeInfo = () => {
+  return (
+    <View style={[
+      styles.container, 
+      {
+        backgroundColor: 'yellow',
+        flex: 2  
+      }
+      ]}></View>)
 }
 
-export default App;
+const PokeList = () => {
+  return (
+    <View style={[
+      styles.container, 
+      {
+        backgroundColor: 'red',
+        flex: 7
+        
+      }
+      ]}>
+        
+    </View>
+  )
+}
+
+// ------------------[ Pokemon Components ]------------------ //
+
+function PokeImage(src) {
+  return <image src={src} alt="Image" />
+}
+
+// ------------------[ Style Sheets ]------------------ //
+
+const styles = StyleSheet.create({
+  index: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'green',
+    height: 700,
+    padding: 20,
+  },
+  container: {
+    padding: 10
+  }
+})
+
+export default Flex;
